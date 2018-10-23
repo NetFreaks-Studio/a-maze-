@@ -14,24 +14,42 @@ var times = 0;
 #Defines the number of times the labyrinth needs to rotate
 var pendingRotations = 0;
 
+class foo:
+	var hel = 0
+	func _stfu():
+		print("hi")
+func _ready():
+	var a = Vector2(1,0)
+	a.rotated(PI)
+	print(a)	
+	
+	
 func _physics_process(delta):
 	$Camera.position = $Ball.position;
-	print($Ball.linear_velocity)
+	
+	#print($Ball.motion)
+	#print($Ball.normal)
 	
 	#rotates the world based on the variables set by the _rotate_* methods
 	if times != 0:
 		$Camera.rotate(rotationPerPhysicsProcess);
+		$Ball.normal = $Ball.normal.rotated(rotationPerPhysicsProcess);
 		times -= 1;
 		pendingRotations = ceil(times/rotationSpeed);
 	else:
 		rotationPerPhysicsProcess = 0;
 		
 	#Updates gravity's direction as the world rotates
-	Physics2DServer.area_set_param(get_world_2d().space, Physics2DServer.AREA_PARAM_GRAVITY_VECTOR, defaultGravityVector.rotated($Camera.rotation))
+
+	
+	
+	
 
 func _input(event):
-	if Input.is_action_just_pressed("ui_right"):
+	if Input.is_action_just_pressed("ui_left"):
 		_rotate_right()
+	if Input.is_action_just_pressed("ui_right"):
+		_rotate_left()
 
 
 

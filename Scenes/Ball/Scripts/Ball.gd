@@ -6,7 +6,6 @@ const gravity = 10
 const bounce_force = 0.225
 const friction = 0.047
 const friction_ratio = 75
-const colliding = false
 
 # do not change ----------------
 var sprite_rotation_speed = friction/friction_ratio
@@ -19,22 +18,30 @@ var gravity_multiplier = 1
 var rotation_force = 0
 
 func _physics_process(delta):
-	#rotate(rotation_force)
-
-	motion -= normal*10
+	rotation_degrees = round(rotation_degrees)
+	$Sprite.rotate(rotation_force)
 	if test_move(global_transform, delta*motion):
-		if colliding == false:
-			var colliding = true;
-			var aux_motion = motion;
-			var col = move_and_collide(motion)	
-			motion = motion.bounce(col.normal).normalized()*lerp(bounce_force*motion.length(), motion.length(), motion.angle_to(aux_motion)/PI)
-			#if motion.length() <= 3:
-				#motion = Vector2(0,0)
+		motion -= normal*gravity*gravity_multiplier
+		#motion -= motion*friction;
+		var col = move_and_collide(motion)
+		var aux_motion = motion.bounce(col.normal)
+		motion = aux_motion*lerp(1, bounce_force, abs(motion.angle_to(aux_motion)/PI))
+		if abs(normal.angle_to(motion)) != 0:
+			rotation_force = (normal.angle_to(motion)/abs(normal.angle_to(motion)))*motion.length()*sprite_rotation_speed
+		else:
+			rotation_force = 0
 	else:
-			motion = move_and_slide(motion, normal)
-		
-func _get_normal():
-	return normal
-
-func _set_normal(normal1):
-	normal = normal1;
+		if get_slide_count()>0 or motion.length() == 0:
+			motion -= motion*friction;
+			#rotation_force = motion.length()*sprite_rotation_speed
+			if abs(normal.angle_to(motion)) != 0:
+				rotation_force = (normal.angle_to(motion)/abs(normal.angle_to(motion)))*motion.length()*sprite_rotation_speed
+			else:
+				rotation_force = 0
+		motion -= normal*gravity*gravity_multiplier
+		motion = move_and_slide(motion, normal)
+	
+func _rotate(rotation_factor):
+	normal = normal.rotated(rotation_factor)
+	motion = motion.rotated(rotation_factor)
+	rotate(rotation_factor)

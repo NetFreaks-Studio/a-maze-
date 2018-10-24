@@ -4,6 +4,8 @@ extends Node2D
 
 #Defines the rotation speed of the mase 
 const rotationSpeed = 15;
+const right = -1
+const left = 1
 
 const defaultGravityVector = Vector2(0,1);
 
@@ -14,60 +16,36 @@ var times = 0;
 #Defines the number of times the labyrinth needs to rotate
 var pendingRotations = 0;
 
-class foo:
-	var hel = 0
-	func _stfu():
-		print("hi")
-func _ready():
-	var a = Vector2(1,0)
-	a.rotated(PI)
-	print(a)	
-	
+
 	
 func _physics_process(delta):
-	$Camera.position = $Ball.position;
+	_round_ball_to_the_axis();
 	
-	#print($Ball.motion)
-	#print($Ball.normal)
+	if Input.is_action_just_pressed("ui_left"):
+		_rotate(right)
+	elif Input.is_action_just_pressed("ui_right"):
+		_rotate(left)
 	
-	#rotates the world based on the variables set by the _rotate_* methods
-	if times != 0:
-		$Camera.rotate(rotationPerPhysicsProcess);
-		$Ball.normal = $Ball.normal.rotated(rotationPerPhysicsProcess);
+	_update_rotation_logic()
+
+func _update_rotation_logic():
+	if times > 0:
+		pendingRotations = ceil(times/15.0);
+		$Ball._rotate(rotationPerPhysicsProcess)
 		times -= 1;
-		pendingRotations = ceil(times/rotationSpeed);
 	else:
 		rotationPerPhysicsProcess = 0;
-		
-	#Updates gravity's direction as the world rotates
+		pendingRotations = 0
 
+
+func _rotate(direction):
+	if rotationPerPhysicsProcess*(direction) >= 0:
+		times += rotationSpeed
+	elif times > 0:
+		times = pendingRotations * rotationSpeed - times
+	rotationPerPhysicsProcess = direction*(PI/2)/rotationSpeed;
 	
-	
-	
-
-func _input(event):
-	if Input.is_action_just_pressed("ui_left"):
-		_rotate_right()
-	if Input.is_action_just_pressed("ui_right"):
-		_rotate_left()
-
-
-
-
-#makes the world rotate left
-#is called by LeftArrow signal: Just_Pressed 
-func _rotate_left():
-	if rotationPerPhysicsProcess >= 0:
-		times += rotationSpeed;
-	else:
-		times = pendingRotations * rotationSpeed - times;
-	rotationPerPhysicsProcess = (PI/2)/rotationSpeed;
-
-#makes the world rotate right
-#is called by RightArrow singla: Just_Pressed
-func _rotate_right():
-	if rotationPerPhysicsProcess <= 0:
-		times += 15;
-	else:
-		times = pendingRotations * rotationSpeed - times;
-	rotationPerPhysicsProcess = -(PI/2)/rotationSpeed;
+func _round_ball_to_the_axis():
+	if pendingRotations == 0 and fmod($Ball.normal.angle(),PI/2) < 2:
+		$Ball.normal.x = round($Ball.normal.x)
+		$Ball.normal.y = round($Ball.normal.y)

@@ -19,12 +19,8 @@ var pendingRotations = 0;
 
 	
 func _physics_process(delta):
-	_round_ball_to_the_axis();
 	
-	if Input.is_action_just_pressed("ui_left"):
-		_rotate(right)
-	elif Input.is_action_just_pressed("ui_right"):
-		_rotate(left)
+	_round_ball_to_the_axis();
 	
 	_update_rotation_logic()
 
@@ -37,6 +33,12 @@ func _update_rotation_logic():
 		rotationPerPhysicsProcess = 0;
 		pendingRotations = 0
 
+func _on_Right_Arrow_pressed():
+	_rotate(right);
+	
+func _on_Left_Arrow_pressed():
+	_rotate(left);
+
 
 func _rotate(direction):
 	if rotationPerPhysicsProcess*(direction) >= 0:
@@ -45,7 +47,11 @@ func _rotate(direction):
 		times = pendingRotations * rotationSpeed - times
 	rotationPerPhysicsProcess = direction*(PI/2)/rotationSpeed;
 	
+#prevents the ball from getting slightly off axis
 func _round_ball_to_the_axis():
 	if pendingRotations == 0 and fmod($Ball.normal.angle(),PI/2) < 2:
 		$Ball.normal.x = round($Ball.normal.x)
 		$Ball.normal.y = round($Ball.normal.y)
+		$Ball.rotation_degrees = round($Ball.rotation_degrees)
+
+

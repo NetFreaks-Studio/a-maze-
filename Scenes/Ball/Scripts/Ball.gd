@@ -26,10 +26,10 @@ func _physics_process(delta):
 		motion = aux_motion*lerp(1, bounce_force, abs(motion.angle_to(aux_motion)/PI))
 		_update_sprite_rotation()
 	else:
+		motion = move_and_slide(motion, normal)
 		if get_slide_count()>0 or motion.length() == 0:
 			motion -= motion*friction;
 			_update_sprite_rotation()
-		motion = move_and_slide(motion, normal)
 	
 func _next_level():
 	pass
@@ -67,7 +67,10 @@ func _rotate_sprite():
 	$Sprite.rotate(rotation_force)
 
 func _update_sprite_rotation():
+	#if abs(normal.angle_to(motion)) != 0:
+	#	rotation_force = (normal.angle_to(motion)/abs(normal.angle_to(motion)))*motion.length()*sprite_rotation_speed
+	#else:
+	#	rotation_force = 0
 	if abs(normal.angle_to(motion)) != 0:
-		rotation_force = (normal.angle_to(motion)/abs(normal.angle_to(motion)))*motion.length()*sprite_rotation_speed
-	else:
-		rotation_force = 0
+		rotation_force = (normal.angle_to(motion)/abs(normal.angle_to(motion)))*(normal.rotated(PI/2).abs()*motion).length()*sprite_rotation_speed
+		

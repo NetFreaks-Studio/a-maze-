@@ -1,12 +1,15 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://Scenes/Levels/Generic/Generic/Scripts/Generic_Level.gd" type="Script" id=1]
 [ext_resource path="res://Tilesets/generic_tileset.tres" type="TileSet" id=2]
 [ext_resource path="res://Scenes/Ball/Ball.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Assets/Sprites/UI/Left Arrow/Left_Arrow_Default.png" type="Texture" id=4]
-[ext_resource path="res://Assets/Sprites/UI/Left Arrow/Left_Arrow_Pressed.png" type="Texture" id=5]
-[ext_resource path="res://Assets/Sprites/UI/Right Arrow/Right_Arrow_Default.png" type="Texture" id=6]
-[ext_resource path="res://Assets/Sprites/UI/Right Arrow/Right_Arrow_Pressed.png" type="Texture" id=7]
+[ext_resource path="res://Assets/Sprites/UI/Pause/Pause_Default.png" type="Texture" id=4]
+[ext_resource path="res://Assets/Sprites/UI/Pause/Pause_Pressed.png" type="Texture" id=5]
+[ext_resource path="res://Assets/Sprites/UI/Left Arrow/Left_Arrow_Default.png" type="Texture" id=6]
+[ext_resource path="res://Assets/Sprites/UI/Left Arrow/Left_Arrow_Pressed.png" type="Texture" id=7]
+[ext_resource path="res://Assets/Sprites/UI/Right Arrow/Right_Arrow_Default.png" type="Texture" id=8]
+[ext_resource path="res://Assets/Sprites/UI/Right Arrow/Right_Arrow_Pressed.png" type="Texture" id=9]
+[ext_resource path="res://Scenes/Menus/Pause/Pause.tscn" type="PackedScene" id=10]
 
 [node name="Generic_Level" type="Node2D" index="0"]
 
@@ -74,16 +77,15 @@ __meta__ = {
 
 [node name="Ball" parent="." index="1" instance=ExtResource( 3 )]
 
-editor/display_folded = true
-position = Vector2( 224, 128 )
-_sections_unfolded = [ "Collision" ]
+position = Vector2( 240, 136 )
+_sections_unfolded = [ "Collision", "Transform", "Z Index" ]
 
 [node name="Camera" type="Camera2D" parent="Ball" index="2"]
 
 anchor_mode = 1
 rotating = true
 current = true
-zoom = Vector2( 1.1, 1.1 )
+zoom = Vector2( 1, 1 )
 limit_left = -10000000
 limit_top = -10000000
 limit_right = 10000000
@@ -102,7 +104,7 @@ drag_margin_bottom = 0.2
 editor_draw_screen = true
 editor_draw_limits = false
 editor_draw_drag_margin = false
-_sections_unfolded = [ "Smoothing", "Transform" ]
+_sections_unfolded = [ "Limit", "Transform" ]
 __meta__ = {
 "_edit_lock_": true
 }
@@ -121,6 +123,10 @@ anchor_left = 0.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
+margin_left = 456.0
+margin_top = -127.0
+margin_right = -8.0
+margin_bottom = -103.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
 focus_mode = 2
@@ -132,9 +138,9 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-__meta__ = {
-"_edit_lock_": true
-}
+texture_normal = ExtResource( 4 )
+texture_pressed = ExtResource( 5 )
+_sections_unfolded = [ "Textures" ]
 
 [node name="Left_Arrow" type="TextureButton" parent="UI-HUD" index="1"]
 
@@ -157,8 +163,8 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 4 )
-texture_pressed = ExtResource( 5 )
+texture_normal = ExtResource( 6 )
+texture_pressed = ExtResource( 7 )
 _sections_unfolded = [ "Margin", "Textures" ]
 
 [node name="Right_Arrow" type="TextureButton" parent="UI-HUD" index="2"]
@@ -182,148 +188,34 @@ toggle_mode = false
 enabled_focus_mode = 2
 shortcut = null
 group = null
-texture_normal = ExtResource( 6 )
-texture_pressed = ExtResource( 7 )
+texture_normal = ExtResource( 8 )
+texture_pressed = ExtResource( 9 )
 _sections_unfolded = [ "Margin", "Textures" ]
 
-[node name="Menus" type="Control" parent="." index="3"]
+[node name="Label" type="Label" parent="UI-HUD" index="3"]
 
 anchor_left = 0.0
 anchor_top = 0.0
 anchor_right = 0.0
 anchor_bottom = 0.0
-margin_right = 40.0
-margin_bottom = 40.0
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 56.0
+margin_bottom = 30.0
 rect_pivot_offset = Vector2( 0, 0 )
 rect_clip_content = false
-mouse_filter = 0
+mouse_filter = 2
 mouse_default_cursor_shape = 0
 size_flags_horizontal = 1
-size_flags_vertical = 1
-__meta__ = {
-"_edit_lock_": true
-}
+size_flags_vertical = 4
+text = "0"
+percent_visible = 1.0
+lines_skipped = 0
+max_lines_visible = -1
 
-[node name="Pause" type="Popup" parent="Menus" index="0"]
-
-editor/display_folded = true
-visible = false
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 40.0
-margin_bottom = 40.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-popup_exclusive = false
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="Resume" type="TextureButton" parent="Menus/Pause" index="0"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 40.0
-margin_bottom = 40.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-
-[node name="Restart" type="TextureButton" parent="Menus/Pause" index="1"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 40.0
-margin_bottom = 40.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-
-[node name="Quit" type="TextureButton" parent="Menus/Pause" index="2"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 40.0
-margin_bottom = 40.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-
-[node name="Cog_Wheel" type="TextureButton" parent="Menus/Pause" index="3"]
-
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 40.0
-margin_bottom = 40.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-focus_mode = 2
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-toggle_mode = false
-enabled_focus_mode = 2
-shortcut = null
-group = null
-
-[node name="Settings" type="Popup" parent="Menus" index="1"]
+[node name="Pause" parent="UI-HUD" index="4" instance=ExtResource( 10 )]
 
 visible = false
-anchor_left = 0.0
-anchor_top = 0.0
-anchor_right = 0.0
-anchor_bottom = 0.0
-margin_right = 40.0
-margin_bottom = 40.0
-rect_pivot_offset = Vector2( 0, 0 )
-rect_clip_content = false
-mouse_filter = 0
-mouse_default_cursor_shape = 0
-size_flags_horizontal = 1
-size_flags_vertical = 1
-popup_exclusive = false
-__meta__ = {
-"_edit_lock_": true
-}
 
 [connection signal="pressed" from="UI-HUD/Left_Arrow" to="." method="_on_Left_Arrow_pressed"]
 

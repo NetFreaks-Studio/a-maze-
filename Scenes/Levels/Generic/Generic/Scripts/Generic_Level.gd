@@ -17,11 +17,11 @@ var times = 0;
 var pendingRotations = 0;
 
 
-	
+func _process(delta):
+	$"UI-HUD/Label".text = str(round($Ball.motion.length()/55))
+
 func _physics_process(delta):
-	
 	_round_ball_to_the_axis();
-	
 	_update_rotation_logic()
 
 func _update_rotation_logic():

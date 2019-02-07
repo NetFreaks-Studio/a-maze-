@@ -25,7 +25,6 @@ var rotation_force = 0
 
 #processes bounces, sliding and free falling
 func _physics_process(delta):
-	_update_gravity()
 	if test_move(global_transform, delta*motion) and motion.length() > 10:
 		var col = move_and_collide(motion*delta)
 		var aux_motion = motion.bounce(col.normal)
@@ -36,6 +35,7 @@ func _physics_process(delta):
 		if is_on_wall() or is_on_floor() or motion.length() <= 10:
 			motion -= motion*friction;
 			_update_sprite_rotation()
+	_update_gravity()	
 	_rotate_sprite()
 
 #rotates the ball and all its physics atributes. 

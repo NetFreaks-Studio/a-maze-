@@ -8,7 +8,7 @@ const gravity = 10
 #constant by which the balls velocity (motion.length()) is multiplied if it were to bounce straight up
 const bounce_force = 0.225
 
-#contants to make the ball rotation by friction look smoth
+#contants to make the ball rotation by friction look smooth
 #---may-require-tweaks---
 const friction = 0.047
 const friction_ratio = 75
@@ -25,22 +25,13 @@ var rotation_force = 0
 
 #processes bounces, sliding and free falling
 func _physics_process(delta):
-	if motion != Vector2(0,0):
-		_rotate_sprite()
 	_update_gravity()
-	if test_move(global_transform, delta*motion) and motion.length() > 10:
-		print("tm")
-		var col = move_and_collide(motion*delta)
+	var col = move_and_collide(motion*delta)
+	if col != null:
 		var aux_motion = motion.bounce(col.normal)
 		motion = aux_motion*lerp(1, bounce_force, abs(motion.angle_to(aux_motion)/PI))
 		_update_sprite_rotation()
-	else:
-		print("nocol")
-		motion = move_and_slide(motion, normal)
-		if get_slide_count() > 0:
-			print("slidec")
-			motion -= motion*friction;
-			_update_sprite_rotation()
+	_rotate_sprite()
 	
 	
 

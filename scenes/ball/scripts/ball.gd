@@ -25,18 +25,24 @@ var rotation_force = 0
 
 #processes bounces, sliding and free falling
 func _physics_process(delta):
+	if motion != Vector2(0,0):
+		_rotate_sprite()
+	_update_gravity()
 	if test_move(global_transform, delta*motion) and motion.length() > 10:
+		print("tm")
 		var col = move_and_collide(motion*delta)
 		var aux_motion = motion.bounce(col.normal)
 		motion = aux_motion*lerp(1, bounce_force, abs(motion.angle_to(aux_motion)/PI))
 		_update_sprite_rotation()
 	else:
+		print("nocol")
 		motion = move_and_slide(motion, normal)
-		if is_on_wall() or is_on_floor() or motion.length() <= 10:
+		if get_slide_count() > 0:
+			print("slidec")
 			motion -= motion*friction;
 			_update_sprite_rotation()
-	_update_gravity()	
-	_rotate_sprite()
+	
+	
 
 #rotates the ball and all its physics atributes. 
 #Desired effect for the end user: map is rotated, the ball keeps being affected by the gravity (falling down), as per usual

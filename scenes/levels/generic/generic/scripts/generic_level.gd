@@ -22,7 +22,8 @@ func _ready():
 	pass
 
 func _process(delta):
-	$"UI-HUD/Label".text = str(round($Ball.motion.length()/55))
+	#$"UI-HUD/Label".text = str(round($Ball.motion.length()/55))
+	pass
 
 func _physics_process(delta):
 	_round_ball_to_the_axis();
@@ -38,10 +39,11 @@ func _update_rotation_logic():
 		pendingRotations = 0
 
 func _on_Right_Arrow_pressed():
-	_rotate(right);
+	_rotate(right)
+	#$Ball.test(Vector2(50,1))
 	
 func _on_Left_Arrow_pressed():
-	_rotate(left);
+	_rotate(left)
 
 
 func _rotate(direction):

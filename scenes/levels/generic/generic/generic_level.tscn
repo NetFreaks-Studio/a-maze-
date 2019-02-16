@@ -76,7 +76,7 @@ __meta__ = {
 
 [node name="Ball" parent="." index="1" instance=ExtResource( 3 )]
 
-position = Vector2( 205, 22 )
+position = Vector2( 230, 95 )
 _sections_unfolded = [ "Collision", "Transform", "Z Index", "collision" ]
 
 [node name="Camera" type="Camera2D" parent="Ball" index="2"]

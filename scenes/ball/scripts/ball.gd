@@ -31,8 +31,9 @@ func _physics_process(delta):
 	if mbs_collisions:
 		for i in mbs_collisions:
 			var col_motion = (i.travel + i.remainder)/delta
-			_update_sprite_rotation()
-			motion = motion*lerp(bounce_force, 1, abs(col_motion.angle_to(-i.normal)/(PI/2)))
+			var normal = i.normal
+			_update_sprite_rotation(normal, col_motion, friction*friction_multiplier)
+			motion = motion*lerp(bounce_force, 1, abs(col_motion.angle_to(-normal)/(PI/2)))
 	else:
 		rotation_force = rotation_force*0.99
 	if motion == Vector2(0,0):
@@ -55,12 +56,13 @@ func _move_bounce_and_slide_aux(vel_rel, slide_min, vel_rel_remainder):
 		var horizontal_velocity_after_impact = tangent.dot(bounce)
 		
 		var remainder_bounce = remainder.bounce(normal)
-		
 		if abs(vertical_velocity_after_impact) >= slide_min:
+			print("bounce")
 			result = _move_bounce_and_slide_aux(bounce, slide_min, remainder_bounce)
 		elif abs(horizontal_velocity_after_impact) > 0.0001:
 			var slide = tangent*horizontal_velocity_after_impact
 			var remainder_slide = tangent*tangent.dot(remainder_bounce)
+			print("slide")
 			result = _move_bounce_and_slide_aux(slide, slide_min, remainder_slide)
 		else:
 			result = Vector2(0,0)
@@ -69,7 +71,7 @@ func _move_bounce_and_slide_aux(vel_rel, slide_min, vel_rel_remainder):
 func move_bounce_and_slide(vel, delta):
 	mbs_collisions = []
 	var vel_rel = vel*delta
-	var slide_min = 50*delta
+	var slide_min = 0*delta
 	return _move_bounce_and_slide_aux(vel_rel, slide_min, vel_rel)/delta
 
 #rotates the ball and all its physics atributes. 
@@ -88,9 +90,5 @@ func _rotate_sprite(delta):
 	$Sprite.rotate(rotation_force*delta)
 
 #updates the values by which the sprite will be rotated by (friction)
-func _update_sprite_rotation():
-	if abs(normal.angle_to(motion)):
-		rotation_force = (normal.angle_to(motion)/abs(normal.angle_to(motion)))*(normal.tangent()*motion).length()*friction*friction_multiplier
-		
-func test(vec):
-	move_and_collide(vec)
+func _update_sprite_rotation(normal, motion, friction):
+		rotation_force = -normal.tangent().dot(motion)*friction

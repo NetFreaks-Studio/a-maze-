@@ -22,12 +22,17 @@ var normal = Vector2(0,-1)
 var gravity_multiplier = 1
 var rotation_force = 0
 
+onready var sprite = $Sprite
+
 func _process(delta):
 	_rotate_sprite(delta)
 
 func _physics_process(delta):
 	_update_gravity()
+	print(motion)
+	print("mbs")
 	motion = move_bounce_and_slide(motion, delta)
+	print(motion)
 	if mbs_collisions:
 		for i in mbs_collisions:
 			var col_motion = (i.travel + i.remainder)/delta
@@ -38,10 +43,9 @@ func _physics_process(delta):
 		rotation_force = rotation_force*0.99
 	if motion == Vector2(0,0):
 		rotation_force = 0
-
-func _move_bounce_and_slide_aux(vel_rel, slide_min, vel_rel_remainder):
-	var col = move_and_collide(vel_rel_remainder)
-	var result = vel_rel
+func _move_bounce_and_slide_aux(vel_rel, bounce_min):
+	var col = move_and_collide(vel_rel)
+	var result
 	if col:
 		mbs_collisions.append(col)
 		
@@ -56,23 +60,23 @@ func _move_bounce_and_slide_aux(vel_rel, slide_min, vel_rel_remainder):
 		var horizontal_velocity_after_impact = tangent.dot(bounce)
 		
 		var remainder_bounce = remainder.bounce(normal)
-		if abs(vertical_velocity_after_impact) >= slide_min:
-			print("bounce")
-			result = _move_bounce_and_slide_aux(bounce, slide_min, remainder_bounce)
-		elif abs(horizontal_velocity_after_impact) > 0.0001:
+		if abs(vertical_velocity_after_impact) >= bounce_min:
+			result = _move_bounce_and_slide_aux(bounce, bounce_min)
+		elif abs(horizontal_velocity_after_impact) != 0:
 			var slide = tangent*horizontal_velocity_after_impact
 			var remainder_slide = tangent*tangent.dot(remainder_bounce)
-			print("slide")
-			result = _move_bounce_and_slide_aux(slide, slide_min, remainder_slide)
+			result = _move_bounce_and_slide_aux(slide, bounce_min)
 		else:
 			result = Vector2(0,0)
-	return result
+	else:
+		 result = vel_rel
+	return result.normalized()*vel_rel.length()
 
 func move_bounce_and_slide(vel, delta):
 	mbs_collisions = []
 	var vel_rel = vel*delta
-	var slide_min = 0*delta
-	return _move_bounce_and_slide_aux(vel_rel, slide_min, vel_rel)/delta
+	var bounce_min = 100*delta
+	return _move_bounce_and_slide_aux(vel_rel, bounce_min)/delta
 
 #rotates the ball and all its physics atributes. 
 #Desired effect for the end user: map is rotated, the ball keeps being affected by the gravity (falling down), as per usual
@@ -87,7 +91,7 @@ func _update_gravity():
 
 #rotates the sprite based on friction
 func _rotate_sprite(delta):
-	$Sprite.rotate(rotation_force*delta)
+	sprite.rotate(rotation_force*delta)
 
 #updates the values by which the sprite will be rotated by (friction)
 func _update_sprite_rotation(normal, motion, friction):
